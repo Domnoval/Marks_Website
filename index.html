@@ -81,58 +81,6 @@
     }
 
     /* ── POLAROID ZOOM INTRO ── */
-    #zoom-overlay {
-      position:fixed; inset:0; z-index:950;
-      background:rgba(6,5,4,0.96);
-      opacity:0; pointer-events:none;
-      transition:opacity 0.6s ease;
-      display:flex; align-items:center; justify-content:center;
-    }
-    #zoom-overlay.active { opacity:1; pointer-events:all; }
-    #zoom-overlay.exit { opacity:0; transition:opacity 1s ease; }
-
-    .zoom-frame {
-      position:absolute;
-      width:clamp(280px, 52vw, 620px);
-      aspect-ratio:4/3;
-      opacity:0;
-      transform:translateY(-60px) rotate(0deg);
-      transition:none;
-      box-shadow:0 8px 40px rgba(0,0,0,0.7), 0 2px 8px rgba(0,0,0,0.5);
-      background:#111;
-      /* Polaroid border */
-      padding:12px 12px 40px 12px;
-      box-sizing:border-box;
-    }
-    /* Each polaroid gets a slight unique rotation */
-    #zf-0 { --rot: -2.5deg; }
-    #zf-1 { --rot:  1.8deg; }
-    #zf-2 { --rot: -1.2deg; }
-    #zf-3 { --rot:  2.1deg; }
-    #zf-4 { --rot: -0.8deg; }
-    #zf-5 { --rot:  1.4deg; }
-
-    .zoom-frame.show {
-      opacity:1;
-      transform:translateY(0) rotate(var(--rot));
-      transition:
-        opacity 0.15s ease,
-        transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
-    }
-    .zoom-frame img {
-      width:100%; height:100%; object-fit:cover; display:block;
-    }
-    /* Subtle location label on polaroid bottom */
-    .zoom-frame::after {
-      content:attr(data-label);
-      position:absolute; bottom:0; left:0; right:0;
-      height:40px;
-      display:flex; align-items:center; justify-content:center;
-      font-family:'Outfit',sans-serif; font-size:0.55rem;
-      letter-spacing:0.3em; text-transform:uppercase;
-      color:rgba(201,168,76,0.5);
-    }
-
     /* ── ESTABLISHING SHOT ── */
     #establishing { background:#000; }
     .establishing-img { position:relative; height:72vh; min-height:420px; overflow:hidden; }
@@ -145,22 +93,6 @@
       font-size:0.6rem; letter-spacing:0.48em; text-transform:uppercase;
       color:var(--gold); backdrop-filter:blur(8px); white-space:nowrap;
     }
-
-    /* ── SIGIL OVERLAY ── */
-    #sigil-overlay {
-      position:fixed; inset:0; z-index:900; background:var(--atmo-bg, var(--bg));
-      display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2rem;
-      opacity:0; pointer-events:none; transition:opacity 0.8s ease;
-    }
-    #sigil-overlay.active { opacity:1; pointer-events:all; }
-    #sigil-canvas { width:min(300px,68vw); height:min(300px,68vw); }
-    .sigil-text {
-      font-family:'Cormorant Garamond',serif; font-style:italic;
-      font-size:clamp(0.88rem,2vw,1.05rem); color:var(--text-dim);
-      letter-spacing:0.08em; text-align:center; max-width:380px;
-      opacity:0; transition:opacity 1.2s ease;
-    }
-    .sigil-text.visible { opacity:1; }
 
     /* ── SITE ── */
     #site { opacity:0; visibility:hidden; transition:opacity 1s ease; }
@@ -621,21 +553,12 @@
        Plays before the Gate. On "Enter", fades out → reveals Gate.
        All selectors namespaced #descent-* to avoid collisions.
        ═══════════════════════════════════════════════════════════════ */
-    body.descent-active { overflow:hidden !important; cursor:none; background:#000 !important; }
+    body.descent-active { overflow:hidden !important; background:#000 !important; }
     body.descent-active::after {
       content:''; position:fixed; inset:0; z-index:1210;
       pointer-events:none; opacity:0.5;
       background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.045'/%3E%3C/svg%3E");
     }
-    #descent-cursor {
-      position:fixed; width:7px; height:7px;
-      background:rgba(200,168,76,0.85);
-      border-radius:50%; pointer-events:none;
-      z-index:9999; transform:translate(-50%,-50%);
-      mix-blend-mode:screen; transition:transform 0.08s ease, opacity 1s ease;
-      display:none;
-    }
-    body.descent-active #descent-cursor { display:block; }
     #descent-canvas {
       position:fixed; inset:0; width:100%; height:100%;
       z-index:1100; pointer-events:none;
@@ -818,8 +741,7 @@
     body:not(.descent-active) #descent-scroll-hint,
     body:not(.descent-active) #descent-arrival-ui,
     body:not(.descent-active) #descent-enter-btn,
-    body:not(.descent-active) #descent-skip-btn,
-    body:not(.descent-active) #descent-cursor {
+    body:not(.descent-active) #descent-skip-btn {
       opacity:0 !important; pointer-events:none !important;
     }
     body:not(.descent-active)::after { opacity:0; transition:opacity 1.5s ease; }
@@ -831,7 +753,6 @@
      DESCENT INTRO — scroll from space to Lazy Lake
      ═══════════════════════════════════════════════════════════════ -->
 
-<div id="descent-cursor"></div>
 
 <div id="descent-loader">
   <div class="descent-loader-name">LIONSGATE</div>
@@ -893,22 +814,6 @@
   </div>
 </div>
 
-<!-- ── POLAROID ZOOM INTRO ── -->
-<div id="zoom-overlay">
-  <div class="zoom-frame" id="zf-0" data-label="Earth"><img src="zoom-earth.jpg" alt=""></div>
-  <div class="zoom-frame" id="zf-1" data-label="North America"><img src="zoom-continent.jpg" alt=""></div>
-  <div class="zoom-frame" id="zf-2" data-label="Florida"><img src="zoom-coast.jpg" alt=""></div>
-  <div class="zoom-frame" id="zf-3" data-label="Fort Lauderdale"><img src="zoom-city.jpg" alt=""></div>
-  <div class="zoom-frame" id="zf-4" data-label="Lazy Lake"><img src="zoom-neighborhood.jpg" alt=""></div>
-  <div class="zoom-frame" id="zf-5" data-label="Lionsgate"><img src="zoom-property.jpg" alt=""></div>
-</div>
-
-<!-- ── SIGIL ── -->
-<div id="sigil-overlay">
-  <canvas id="sigil-canvas" width="300" height="300"></canvas>
-  <p class="sigil-text" id="sigil-text">Welcome, fellow traveler. Perspective shifts from here.</p>
-</div>
-
 <!-- ── SITE ── -->
 <div id="site">
 
@@ -940,7 +845,7 @@
   <!-- ESTABLISHING SHOT -->
   <section id="establishing">
     <div class="establishing-img">
-      <img src="photos/lionsgate-day.jpg" alt="Lionsgate — Lazy Lake, Florida">
+      <img src="photos/michael-arrival-path.jpg" alt="The arrival path at Lionsgate">
       <div class="establishing-caption reveal">Lazy Lake · Florida</div>
     </div>
   </section>
@@ -1321,7 +1226,9 @@
       There are moments when a change in setting changes everything.<br>
       This is one of those places.
     </p>
-    <form class="contact-form reveal" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+    <form class="contact-form reveal" name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+      <input type="hidden" name="form-name" value="contact">
+      <p style="position:absolute;left:-9999px;" aria-hidden="true"><label>Don't fill this out if you're human: <input name="bot-field"></label></p>
       <div class="form-row">
         <div class="form-field">
           <label for="name">Name</label>
@@ -1384,62 +1291,6 @@
   document.body.classList.add(c);
 })();
 
-/* ── SIGIL GENERATOR ── */
-function drawSigil(canvas, seed){
-  const ctx = canvas.getContext('2d');
-  const W=canvas.width, H=canvas.height, cx=W/2, cy=H/2;
-  ctx.clearRect(0,0,W,H);
-  let s=seed;
-  function rand(){ s=(s*1664525+1013904223)&0xffffffff; return (s>>>0)/0xffffffff; }
-  const R=Math.min(W,H)*0.38;
-  const steps=[];
-  steps.push(()=>{
-    ctx.beginPath(); ctx.arc(cx,cy,R,0,Math.PI*2);
-    ctx.strokeStyle='rgba(201,168,76,0.2)'; ctx.lineWidth=0.5; ctx.stroke();
-  });
-  steps.push(()=>{
-    for(let i=0;i<6;i++){
-      const a=(i/6)*Math.PI*2, px=cx+R*0.5*Math.cos(a), py=cy+R*0.5*Math.sin(a);
-      ctx.beginPath(); ctx.arc(px,py,R*0.5,0,Math.PI*2);
-      ctx.strokeStyle='rgba(201,168,76,0.08)'; ctx.lineWidth=0.5; ctx.stroke();
-    }
-  });
-  steps.push(()=>{
-    ctx.beginPath(); ctx.arc(cx,cy,R*0.5,0,Math.PI*2);
-    ctx.strokeStyle='rgba(201,168,76,0.18)'; ctx.lineWidth=0.5; ctx.stroke();
-  });
-  const rings=3+Math.floor(rand()*4);
-  for(let r=0;r<rings;r++){
-    const sides=3+Math.floor(rand()*5);
-    const radius=R*(0.18+rand()*0.78);
-    const rot=rand()*Math.PI*2;
-    const op=0.12+rand()*0.3;
-    steps.push(()=>{
-      ctx.beginPath();
-      for(let i=0;i<=sides;i++){
-        const a=rot+(i/sides)*Math.PI*2;
-        i===0?ctx.moveTo(cx+radius*Math.cos(a),cy+radius*Math.sin(a)):ctx.lineTo(cx+radius*Math.cos(a),cy+radius*Math.sin(a));
-      }
-      ctx.closePath(); ctx.strokeStyle=`rgba(201,168,76,${op})`; ctx.lineWidth=0.5; ctx.stroke();
-    });
-  }
-  steps.push(()=>{
-    const pts=6+Math.floor(rand()*6);
-    ctx.beginPath();
-    for(let i=0;i<pts;i++){
-      const a=(i/pts)*Math.PI*2-Math.PI/2;
-      ctx.moveTo(cx,cy); ctx.lineTo(cx+R*0.88*Math.cos(a),cy+R*0.88*Math.sin(a));
-    }
-    ctx.strokeStyle='rgba(201,168,76,0.1)'; ctx.lineWidth=0.5; ctx.stroke();
-  });
-  steps.push(()=>{
-    ctx.beginPath(); ctx.arc(cx,cy,2,0,Math.PI*2);
-    ctx.fillStyle='#c9a84c'; ctx.fill();
-  });
-  const dur=10000/steps.length;
-  steps.forEach((fn,i)=>setTimeout(fn,i*dur));
-  setTimeout(()=>document.getElementById('sigil-text').classList.add('visible'),8200);
-}
 
 /* ── GATE INTRO (auto-advances from descent; no second click) ── */
 (function(){
@@ -1588,7 +1439,6 @@ document.addEventListener('DOMContentLoaded',()=>{
   const enterBtn  = document.getElementById('descent-enter-btn');
   const skipBtn   = document.getElementById('descent-skip-btn');
   const coordsEl  = document.getElementById('descent-coords');
-  const cursorEl  = document.getElementById('descent-cursor');
   const phaseText = document.getElementById('descent-phase-text');
   const phaseSub  = document.getElementById('descent-phase-sub');
   const coordAlt  = document.getElementById('descent-coord-alt');
@@ -1668,12 +1518,6 @@ document.addEventListener('DOMContentLoaded',()=>{
   }, 8000);
 
   preload();
-
-  document.addEventListener('mousemove', e => {
-    if(unlocked || !cursorEl) return;
-    cursorEl.style.left = e.clientX + 'px';
-    cursorEl.style.top  = e.clientY + 'px';
-  });
 
   window.addEventListener('wheel', e => {
     if(unlocked) return;
