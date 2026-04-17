@@ -2,3 +2,12 @@
 node_modules/
 *.log
 .DS_Store
+
+# unused (descent now renders from /frames)
+lionsgate-descent.mp4
+
+# scratch / agent output
+intro-source/
+qa-report.md
+content-inventory.md
+qa-screenshots/
